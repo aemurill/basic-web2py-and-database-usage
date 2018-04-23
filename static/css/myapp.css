@@ -37,7 +37,23 @@ div.memo div.button_list {
 div.memo div.button_list div.buttons {
   display: inline-block;
 }
-/* line 31, ../sass/_main.scss */
+/* line 32, ../sass/_main.scss */
+div.memo div.button_list .blue {
+  background-color: blue;
+}
+/* line 35, ../sass/_main.scss */
+div.memo div.button_list .green {
+  background-color: green;
+}
+/* line 38, ../sass/_main.scss */
+div.memo div.button_list .red {
+  background-color: red;
+}
+/* line 42, ../sass/_main.scss */
+div.memo div.button_list a.btn2 {
+  background-color: gray;
+}
+/* line 46, ../sass/_main.scss */
 div.memo div.button_list a.btn {
   padding: 10px;
 }

@@ -1,3 +1,8 @@
+/*
+ * Code Modified by Axel Murillo 
+ * aemurill CS 183 Spring 2018 
+/*
+
 .colorful {
   color: $clrHilight;
 }
@@ -25,9 +30,24 @@ div.memo {
   div.button_list {
     text-align: right;
     div.buttons {
-      display: inline-block;
+        display: inline-block;
     }
     margin-top: 10px;
+    
+    .blue{
+      background-color: blue;
+    }
+    .green{
+      background-color: green;
+    }
+    .red{
+      background-color: red;
+    }
+    
+    a.btn2{
+        background-color: gray;
+    }
+    
     a.btn {
       padding: 10px;
     }

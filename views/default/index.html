@@ -1,3 +1,5 @@
+<!--Code Modified by Axel Murillo -->
+<!--aemurill CS 183 Spring 2018 -->
 {{extend 'layout.html'}}
 
 {{block head}}
@@ -7,49 +9,81 @@
 
   <!-- Here goes your main HTML code. -->
   {{if auth.user is not None:}}
-
+  <!--only display if logged in-->
   <div class="add_btn">
     <a class="btn red rounded" href="{{=URL('default', 'add')}}"><i class="fa fa-plus"></i> Add</a>
   </div>
-
+    
+  {{pass}}
+  
+<!--Here is the main checklist display loop-->
   {{for cl in checklists:}}
       <div class="memo">
         <div class="memo_text">
-          <div class="memo_title">{{=cl.title}}</div>
-          <div class="memo_content">{{=cl.memo}}</div>
+          <div class="memo_title">{{=cl.title}}
+          </div>
+          <div class="memo_content"><p>{{=cl.memo}}</div>
         </div>
         <div>
+        
           <div class="button_list">
             <div class="buttons">
-              <a class="btn rounded" href="{{=URL('default', 'edit', args=[cl.id])}}">
-                <i class="fa fa-edit fa-lg"></i>
-              </a>
-              <a class="btn rounded red" href="{{=URL('default', 'delete', args=[cl.id], user_signature=True)}}">
-                <i class="fa fa-trash fa-lg"></i>
-              </a>
+              {{if cl.is_public is False:}}
+                <!--IT IS INHERENTLY THE CASE IN WHICH THE USER IS LOGGED IN IF THIS APPEARS-->
+                <!--THE CASE IN WHICH IT IS PRIVATE-->
+                <a  class="btn rounded" href="{{=URL('default', 'toggle_public', args=[cl.id], user_signature=True)}}">
+                  <i class="fa fa-user"></i>                  
+                </a>
+                <a  class="btn green rounded" href="{{=URL('default', 'edit', args=[cl.id], user_signature=True)}}">
+                  <i class="fa fa-edit fa-lg"></i>
+                </a>
+                <a  class="btn red rounded" href="{{=URL('default', 'delete', args=[cl.id], user_signature=True)}}">
+                  <i class="fa fa-trash fa-lg"></i>
+                </a> 
+              {{else:}}
+                {{if auth.user is not None:}}
+                  <!--THE CASE IN WHICH THE USER IS LOGGED IN-->
+                  {{if auth.user.email == cl.user_email:}}
+                    <!--THE CASE IN WHICH IT IS PUBLIC AND OWNED-->
+                    <a  class="btn rounded" href="{{=URL('default', 'toggle_public', args=[cl.id], user_signature=True)}}">
+                      <i class="fa fa-users"></i>
+                    </a>
+                    <a  class="btn green rounded" href="{{=URL('default', 'edit', args=[cl.id], user_signature=True)}}">
+                      <i class="fa fa-edit fa-lg"></i>
+                    </a>
+                    <a  class="btn red rounded" href="{{=URL('default', 'delete', args=[cl.id], user_signature=True)}}">
+                      <i class="fa fa-trash fa-lg"></i>
+                    </a>
+                  {{else:}}
+                    <!--THE CASE IN WHICH IT IS PUBLIC AND NOT OWNED-->
+                    <a class="btn btn2 rounded" ><i class="fa fa-users"></i></a>
+                    <a class="btn btn2 rounded" ><i class="fa fa-edit fa-lg"></i></a>
+                    <a class="btn btn2 rounded" ><i class="fa fa-trash fa-lg"></i></a>
+                  {{pass}}
+                {{else:}}
+                  <!--THE CASE IN WHICH THE USER IS NOT LOGGED IN-->
+                  <a class="btn btn2 rounded" ><i class="fa fa-users"></i></a>
+                  <a class="btn btn2 rounded" ><i class="fa fa-edit fa-lg"></i></a>
+                  <a class="btn btn2 rounded" ><i class="fa fa-trash fa-lg"></i></a>
+                {{pass}}
+              {{pass}}
             </div>
           </div>
+          
         </div>
       </div>
   {{pass}}
 
   {{if not checklists:}}
-
-    <p>You don't have any checklist.  Press on the Add button above to create one.</p>
-
+  <!--THE CASE IN WHICH THERE ARE NO VISIBLE CHECKLISTS AT ALL-->
+    {{if auth.user is not None:}}
+      <p>You don't have any checklists, and funnily enough no one else's checklists are public either.</p>
+      <p>Press on the Add button above to create one.</p>
+    {{else:}}
+      <p>No one has any public checklists... or maybe there's none at all?</p>
+      <p>You should sign up to fix the lack of checklists.</p>
+    {{pass}}
   {{pass}}
 
-  {{else:}}
-
-   <h1 class="main_title">Welcome!</h1>
-
-    <p class="explanation">This site will help you organize your life by storing your checklists.
-        Please log in to use it.</p>
-
-    <div class="login_button">
-        <a href="{{=URL('default', 'user')}}" class="btn">Login</a>
-    </div>
-
-  {{pass}}
 
 </div>

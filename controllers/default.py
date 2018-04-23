@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # this file is released under public domain and you can use without limitations
 
+# Code Modified by Axel Murillo 
+# aemurill CS 183 Spring 2018 
+
 # -------------------------------------------------------------------------
 # This is a sample controller
 # - index is the default action of any application
@@ -20,7 +23,9 @@ def index():
     logger.info('The session is: %r' % session)
     checklists = None
     if auth.user is not None:
-        checklists = db(db.checklist.user_email == auth.user.email).select()
+        checklists = db((db.checklist.user_email == auth.user.email) | (db.checklist.is_public == True)).select()
+    else:
+        checklists = db(db.checklist.is_public == True).select()
     return dict(checklists=checklists)
 
 
@@ -37,18 +42,23 @@ def add():
     elif form.errors:
         session.flash = T('Please correct the info')
     return dict(form=form)
-
+    
 @auth.requires_login()
 @auth.requires_signature()
-def delete():
+def toggle_public():
     if request.args(0) is not None:
         q = ((db.checklist.user_email == auth.user.email) &
              (db.checklist.id == request.args(0)))
-        db(q).delete()
-    redirect(URL('default', 'index'))
-
-
+        row = db(q).select().first()
+        if row is None:
+            session.flash = T('Not Authorized')
+            redirect(URL('default', 'index'))
+        row.update_record(is_public = not row.is_public)
+    redirect(URL('default', 'index'))    
+    
+    
 @auth.requires_login()
+@auth.requires_signature()
 def edit():
     """
     - "/edit/3" it offers a form to edit a checklist.
@@ -77,6 +87,16 @@ def edit():
         elif form.errors:
             session.flash = T('Please enter correct values.')
     return dict(form=form)
+    
+    
+@auth.requires_login()
+@auth.requires_signature()
+def delete():
+    if request.args(0) is not None:
+        q = ((db.checklist.user_email == auth.user.email) &
+             (db.checklist.id == request.args(0)))
+        db(q).delete()
+    redirect(URL('default', 'index'))
 
 def user():
     """

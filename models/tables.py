@@ -1,3 +1,7 @@
+# Code Modified by Axel Murillo 
+# aemurill CS 183 Spring 2018 
+
+
 # Define your tables below (or better in another model file) for example
 #
 # >>> db.define_table('mytable', Field('myfield', 'string'))
@@ -17,6 +21,7 @@ db.define_table('checklist',
                 Field('user_email', default=get_user_email()),
                 Field('title'),
                 Field('memo', 'text'),
+				Field('is_public', 'boolean', default=False),
                 Field('updated_on', 'datetime', update=datetime.datetime.utcnow())
                 )
 
